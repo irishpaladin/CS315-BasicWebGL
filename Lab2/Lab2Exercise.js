@@ -10,6 +10,7 @@ window.onload = function init() {
    //  Configure WebGL
    //  eg. - set a clear color
    //      - turn on depth testing
+   gl.clearColor(.9,.9,.9,1);
 
    //  Load shaders and initialize attribute buffers
    var program = initShaders(gl, "vertex-shader", "fragment-shader");
@@ -27,11 +28,12 @@ window.onload = function init() {
    //render();
 
    // Or draw just before the next repaint event
-   //requestAnimationFrame(render);
+   requestAnimationFrame(render);
 };
 
 
 function render() {
    // clear the screen
+   gl.clear(gl.COLOR_BUFFER_BIT);
    // draw
 }
