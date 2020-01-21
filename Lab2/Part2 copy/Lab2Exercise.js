@@ -18,12 +18,15 @@ window.onload = function init() {
 
    // Set up data to draw
    //Triangle positions
-   var points =
-   [
-      vec2( 0.9,  0.9),
-      vec2( 0.9,  0.0),
-      vec2( 0.0,  0.9)
-   ];
+   var points=
+[
+   vec3( 0.0, 0.0,-0.5 ),
+   vec3( 0.5, 0.0,-0.5 ),
+   vec3( 0.5, 0.5,-0.5 ),
+   vec3( 0.0, 1.0, 0.0 ),
+   vec3( 0.0,-1.0, 0.0 ),
+   vec3( 1.0, 0.0, 0.0 )
+];
 
    // Load the data into GPU data buffers
    var positions = gl.createBuffer();
@@ -34,7 +37,16 @@ window.onload = function init() {
    var vPosition = gl.getAttribLocation(program,"vPosition");
    gl.enableVertexAttribArray(vPosition);
    gl.vertexAttribPointer(vPosition,2,gl.FLOAT, gl.FALSE, 0, 0);
+
+   //ABOVE IS TRIANGLE
+   //ABOVE IS CIRCLES
+   var circlePoints = circle(0);
+
+
+
    // Get addresses of shader uniforms
+
+   uColor = gl.getUniformLocation(program,"uColor");
 
    // Either draw as part of initialization
    //render();
@@ -47,6 +59,13 @@ window.onload = function init() {
 function render() {
    // clear the screen
    gl.clear(gl.COLOR_BUFFER_BIT);
+
+   //there's come color thing here
+   gl.uniform(uColor,0,1,1,1);
+   gl.drawArrays(gl.LINESTRIP,0, 3);
+   var magenta = vec4(1,0,1,1)
+
+   
    // draw
    gl.drawArrays(gl.LINESTRIP,0, 3);
 }

@@ -36,6 +36,8 @@ window.onload = function init() {
    gl.vertexAttribPointer(vPosition,2,gl.FLOAT, gl.FALSE, 0, 0);
    // Get addresses of shader uniforms
 
+   uColor = gl.getUniformLocation(program,"uColor");
+
    // Either draw as part of initialization
    //render();
 
@@ -47,6 +49,10 @@ window.onload = function init() {
 function render() {
    // clear the screen
    gl.clear(gl.COLOR_BUFFER_BIT);
+
+   //there's come color thing here
+
+   
    // draw
    gl.drawArrays(gl.LINESTRIP,0, 3);
 }
