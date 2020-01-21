@@ -7,8 +7,8 @@ var projIndex; //Shader Projection Input
 var mv; //Local Positioning Matrix
 var p; //Local Projection Matrix
 
-var canvaswidth;
-var canvasheight;
+//var canvaswidth;
+//var canvasheight;
 
 var colors = {
   'red': new vec4(1, 0, 0, 1),
@@ -24,6 +24,8 @@ var colors = {
 var objectColor = colors['red']; //current color of sphere
 var rotAngle = 0; //current rotation angle of scene
 var rotChange = -0.5; //speed and direction of scene rotation
+var sliderVal = 0;
+var rotRight = true;
 
 window.onload = function init() {
    // Set up a WebGL Rendering Context in an HTML5 Canvas
@@ -47,8 +49,8 @@ window.onload = function init() {
    projIndex = gl.getUniformLocation(program, "p");
 
    //I added this
-   canvaswidth=canvas.width;
-   this.canvasheight=canvas.height;
+   //canvaswidth=canvas.width;
+   //this.canvasheight=canvas.height;
    ////
 
    // Send a perspective transformation to the shader
@@ -94,9 +96,29 @@ function setupEventListeners()
    var s = document.getElementById("zoomSlider");
 
    s.oninput = function(event) {
-      console.log(s.value);
-      var p = perspective(s.value, canvaswidth/canvasheight, 0.5, 50.0);
-      gl.uniformMatrix4fv(projIndex, gl.FALSE, flatten4x4(p));
+      console.log(s.value + " "+ rotChange);
+      //var p = perspective(s.value, canvaswidth/canvasheight, 0.5, 50.0);
+      //gl.uniformMatrix4fv(projIndex, gl.FALSE, flatten4x4(p));
+      if(rotRight){
+         if(s.value<sliderVal){
+            rotChange+=s.value/10;
+         }else{
+            rotChange-=s.value/10;
+         }
+      }else{
+         if(s.value<sliderVal){
+            rotChange+=(s.value/10)*-1;
+         }else{
+            rotChange-=(s.value/10)*-1;
+         }
+      }
+      sliderVal = s.value;
+   }
+
+   var c = document.getElementById("gl-canvas");
+
+   c.onclick = function(event){
+      rotChange *= -1;
    }
 } 
 
