@@ -11,7 +11,10 @@
          #version 300 es
 
          in  vec2 vPosition; //receives incoming vertex positions
-         
+
+         //eg: a 4 component colour uniform
+         uniform vec4 uColor; //copy this to your colour output
+
          out vec4 color;    //passes the colour of this vertex to the fragment shader
          
          void main() 
@@ -20,7 +23,7 @@
            gl_Position = vec4(vPosition, 0.0, 1.0);
          
            //Colour every vertex red
-           color = vec4(1.0, 0.0, 0.0, 1.0); //colour channels are red, green, blue and alpha
+           color = uColor; //colour channels are red, green, blue and alpha
          } 
       </script>
 

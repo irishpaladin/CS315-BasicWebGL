@@ -18,7 +18,8 @@
          {
            //Add z and w coordinates to the incoming position and pass it on.
            gl_Position = vec4(vPosition, 0.0, 1.0);
-         
+            gl_PointSize = 10.0;
+
            //Colour every vertex red
            color = vec4(1.0, 0.0, 0.0, 1.0); //colour channels are red, green, blue and alpha
          } 
