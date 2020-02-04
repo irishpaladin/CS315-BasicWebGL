@@ -75,6 +75,7 @@ var mvLoc, projLoc;
 
 //Model state variables
 var shoulder = 0, elbow = 0;
+var finger1 = 0;
 
 
 //----------------------------------------------------------------------------
@@ -277,10 +278,12 @@ function animate()
     render();
 }
 
+var a = 0;
+
+var armShape = shapes.wireCube;
 function render() {
 	gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 	
-   var armShape = shapes.wireCube;
 	var matStack = [];
 	
 	//Save view transform
@@ -307,19 +310,46 @@ function render() {
 		mv = mult(mv, rotate(elbow,vec3(0,0,1)));
 		//Position Forearm Cube
 		mv = mult(mv, translate(1, 0.0, 0.0));
+      makeCube();
 		//Scale and Draw Forearm
 		matStack.push(mv);
-			mv = mult(mv, scale(2.0, 0.4, 1.0));
+      mv = mult(mv, scale(2.0, 0.4, 1.0));
+      gl.uniformMatrix4fv(mvLoc, gl.FALSE, flatten(transpose(mv)));
+      gl.drawArrays(armShape.type, armShape.start, armShape.size);
+		//Undo Scale
+      mv = matStack.pop();
+      
+      
+      //Position Finger1 Joint
+		mv = mult(mv, translate(.5, 0.0, 0.0));
+      //Elbow Joint
+		mv = mult(mv, rotate(finger1,vec3(0,0,1)));
+		//Position Forearm Cube
+		mv = mult(mv, translate(1, 0.0, 0.0));
+		//Scale and Draw Forearm
+		matStack.push(mv);
+			mv = mult(mv, scale(.5, 0.2, .2));
 			gl.uniformMatrix4fv(mvLoc, gl.FALSE, flatten(transpose(mv)));
 			gl.drawArrays(armShape.type, armShape.start, armShape.size);
 		//Undo Scale
-		mv = matStack.pop();
+      mv = matStack.pop();
 
     //Restore mv to initial state
-	mv = matStack.pop();
+    mv = matStack.pop();
+   
+   
 	
 }
 
+function makeCube()
+{
+   var mat = mv;
+   mv = mult(mv, scale(.2, 0.2, .2));
+   gl.uniformMatrix4fv(mvLoc, gl.FALSE, flatten(transpose(mv)));
+   gl.drawArrays(armShape.type, armShape.start, armShape.size);
+//Undo Scale
+mv = mat;
+}
 
 
 //----------------------------------------------------------------------------
@@ -400,5 +430,9 @@ function handleKeys(timePassed)
    {
       if (elbow > -144) elbow = (elbow - d);
       else elbow = -144;
+   }
+   if(shift && isPressed("R"))
+   {
+      
    }
 }
