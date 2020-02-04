@@ -26,11 +26,6 @@ window.onload = function init() {
    var points=
 [
    vec3( 0.0, 0.0,-0.5 ),
-   vec3( 0.5, 0.0,-0.5 ),
-   vec3( 0.5, 0.5,-0.5 ),
-   vec3( 0.0, 1.0, 0.0 ),
-   vec3( 0.0,-1.0, 0.0 ),
-   vec3( 1.0, 0.0, 0.0 )
 ];
 
    //---TRIANGLE----
