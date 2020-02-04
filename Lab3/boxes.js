@@ -184,10 +184,12 @@ window.onload = function init() {
   mvLoc = gl.getUniformLocation(program, "mv");
 
   //Set up viewport - see WebGL Anti-Patterns link
-  //gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+  gl.viewport(100, 200, gl.drawingBufferWidth/2, gl.drawingBufferHeight/2);
 
   //Set up projection matrix
   p = perspective(45.0, 1.0, 0.1, 100.0);
+  //ortho
+  //p=ortho(-1,1,-1,1,.1,100);
   gl.uniformMatrix4fv(projLoc, gl.FALSE, flatten(transpose(p)));
  
   requestAnimationFrame(render);
@@ -198,20 +200,40 @@ window.onload = function init() {
 //----------------------------------------------------------------------------
 // Rendering Event Function
 //----------------------------------------------------------------------------
-
+var a = 0;
 function render() {
 
 	gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
 	
 	//Set initial view
 	var eye = vec3(0.0, 0.0, 10.0);
-	var at =  vec3(0.0, 0.0, 0.0);
+	var at =  vec3(-.75, 2.0, 0.0);
 	var up =  vec3(0.0, 1.0, 0.0);
 
-	mv = lookAt(eye,at,up);
-	
-	
-	gl.uniformMatrix4fv(mvLoc, gl.TRUE, flatten(transpose(mv)));
-	gl.drawArrays(shapes.axes.type, shapes.axes.start, shapes.axes.size);	
+   mv = lookAt(eye,at,up);
+   
+   //mv = mat4();
+	gl.uniformMatrix4fv(mvLoc, gl.FALSE, flatten(transpose(mv)));
+   gl.drawArrays(shapes.axes.type, shapes.axes.start, shapes.axes.size);	
 
+   mv=mult(mv,translate(-1,1,0));
+   //mv=mult(mv,rotateZ(15));
+
+   //isolate the scale
+   var backup=mv;
+   mv=mult(mv, scale(0.5,2,0.5));
+   gl.uniformMatrix4fv(mvLoc,gl.FALSE,flatten(transpose(mv)));
+   gl.drawArrays(shapes.wireCube.type,shapes.wireCube.start,shapes.wireCube.size);
+   mv = backup;
+
+   //other cube
+   mv = mult(mv,translate(0.25,1,0.));
+   mv = mult(mv, rotateZ(a));
+   mv = mult(mv,translate(-0.25,1,0));
+   a++;
+
+   mv=mult(mv, scale(0.5,2,0.5));
+   gl.uniformMatrix4fv(mvLoc,gl.FALSE,flatten(transpose(mv)));
+   gl.drawArrays(shapes.wireCube.type,shapes.wireCube.start,shapes.wireCube.size);
+   requestAnimationFrame(render);
 }
