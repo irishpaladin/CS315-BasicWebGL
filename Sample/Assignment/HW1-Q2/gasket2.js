@@ -5,7 +5,7 @@ var gl;
 
 var points = [];
 
-var NumTimesToSubdivide = 1;
+var NumTimesToSubdivide = 4;
 
 window.onload = function init()
 {
@@ -57,72 +57,46 @@ window.onload = function init()
     render();
 };
 
+//function that creates triangle
 function triangle( a, b, c )
 {
     points.push( a, b, c );
 }
 
-
-
+// recursive function for koch snowflake
 function divideTriangle( a, b, c, count )
 {
-    
-
     if(count==0){
-        
-    }
         triangle( a, b, c );
-        //bisect the sides
-        var ab1 = mix( a, b, 0.3333333333 );
-        var ab2 = mix( a, b, 0.6666666666 );
-        // var ab3 = vec2(
-        //     (ab1[0]+ab2[0]+(1.7320508076)*(ab1[1]-ab2[1]))/2,
-        //     (ab1[1]+ab2[1]+(1.7320508076)*(ab1[0]-ab2[0]))/2);
-        var ab3 = calculatePoint(ab1,ab2);
-        triangle( ab1, ab2, ab3);
-        console.log("ab1: "+ab1);
-        console.log("ab2: "+ab2);
-        console.log("ab3: "+ab3);
-        
-        var bc1 = mix( b, c, 0.3333333333 );
-        var bc2 = mix( b, c, 0.6666666666 );
-        // var bc3 = vec2(
-        //     (bc1[0]+bc2[0]+(1.7320508076)*(bc1[1]-bc2[1]))/2,
-        //     (bc1[1]+bc2[1]+(1.7320508076)*(bc1[0]-bc2[0]))/2);
-        var bc3 = calculatePoint(bc1,bc2);
-        triangle( bc1, bc2, bc3);
-        console.log("bc1: "+bc1);
-        console.log("bc2: "+bc2);
-        console.log("bc3: "+bc3);
-
-
-        var ca1 = mix( c, a, 0.3333333333 );
-        var ca2 = mix( c, a, 0.6666666666 );
-        // var ac3 = vec2(
-        //     (ac1[0]+ac2[0]+(1.7320508076)*(ac1[1]-ac2[1]))/2,
-        //     (ac1[1]+ac2[1]+(1.7320508076)*(ac1[0]-ac2[0]))/2);
-
-        var ca3 = calculatePoint(ca1,ca2);
-        triangle( ca1, ca2, ca3);
-        console.log("ac1: "+ca1);
-        console.log("ac2: "+ca2);
-        console.log("ac3: "+ca3);
-
-
-        
-
-
+    }else{
         --count;
+        triangle( a, b, c );
+        
+        //triangle in the main sides
+        var ab1 = mix( a, b, 1/3 );
+        var ab2 = mix( a, b, 2/3 );
+        var ab3 = calculatePoint(ab1,ab2);
+        divideTriangle( ab1, ab3, ab2, count );
 
-    //     //three new triangles
-    //     divideTriangle( ab1, ab2, ab3, count );
-    //     divideTriangle( ac1, ac2, ac3, count );
-    //     divideTriangle( bc1, bc2, bc3, count );
-    // }
+        var bc1 = mix( b, c, 1/3 );
+        var bc2 = mix( b, c, 2/3 );
+        var bc3 = calculatePoint(bc1,bc2);
+        divideTriangle( bc1, bc3, bc2, count );
+        
+        var ca1 = mix( c, a, 1/3 );
+        var ca2 = mix( c, a, 2/3 );
+        var ca3 = calculatePoint(ca1,ca2);
+        divideTriangle( ca1, ca3, ca2, count ); 
+
+        //triangle in the secondary sides
+        divideTriangle( ab2, b, bc1, count );
+        divideTriangle( bc2, c, ca1, count );
+        divideTriangle( ca2, a, ab1, count );
+    }
 }
 
 
-
+//function that calculate the unknow vertice
 function calculatePoint(center, p)
 {
     var angleInDegrees = 60;
