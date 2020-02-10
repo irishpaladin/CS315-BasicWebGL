@@ -7,7 +7,16 @@
     <script type="text/javascript" src="../Common/MVnew.js"></script>
     <script type="text/javascript" src="../Common/flatten.js"></script>    
     <script type="text/javascript" src="robot_arm.js"></script>
-
+    <style>
+        #command{
+            background-color: black;
+            color: lightblue;
+            width: 512px;
+            margin-top: -19px;
+            padding-bottom: 10px;
+            font-family:monospace;
+        }
+    </style>
 </head>
 
 <body>
@@ -17,5 +26,16 @@
     <canvas id="gl-canvas" width="512" height="512">
         Oops ... your browser doesn't support the HTML5 canvas element
     </canvas>
+    <div id="command">
+        <h3>&ensp;Commands</h3>
+        <ul>
+            <li>s/S: to mover robot's shoulder</li>
+            <li>e/E: to move robot's elbow</li>
+            <li>f/F: to move robot's fingers</li>
+            <li>r/R: to rotate the arm on the X axis to see it from different angles</li>
+            <li>t/T: toggle between solid and wire cubes</li>
+            <li>p/P: toggle between perspective and ortho projections</li>
+        </ul>
+    </div>
 </body>
 </html>
