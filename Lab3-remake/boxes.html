@@ -17,5 +17,50 @@
     <canvas id="gl-canvas" width="512" height="512">
         Oops ... your browser doesn't support the HTML5 canvas element
     </canvas>
+    <ul>
+        <li>
+            1. Comment out the lookAt() call and replace it with a translate() with parameters ( 0, 0, -10 )
+            Is there any change in the display? Why? Why not?
+            <p>Nothing changed, because the location where 'perspective camera' points is the same place as the lookAt().</p>
+        </li>
+        <li>
+            2. Comment out both the lookAt() and translate() lines. What happens? Why?
+            <p>Can't see anything but the black canvas. The 'perspective camera' is in the object so we can't see anything.</p>
+        </li>
+        <li>
+            4. Take a look at the perspective() call. The aspect ratio you were originally given was 1.0.
+            <p>What happens when the aspect ratio is 1.0 and you change the canvas dimensions in boxes.html to width="512" height="256" ?</p>
+            <p>&emsp;The object in the canvas is squished vertically.</p>
+            <p>How about width="256" height="512" ?</p>
+            <p>&emsp;The object in the canvas is squished horizontally.</p>
+        </li>
+        <li>
+            10.Rotate everything (using modeling transformations NOT lookAt) so that you are looking down at the top of the boxes and seeing the blue z-axis (and no red y-axis).
+            <br/>If you wanted to leave your x and y axes unchanged, but still see the top of the boxes,
+            <br/>how would you change your code?
+            <p>Instead of putting:</p>
+            <p style="font-family: 'Courier New', Courier, monospace;">
+                mv=mult(mv,translate( 0, 0, -10 ));
+                <br/>mv = mult(mv, rotateX(90));
+            </p> 
+            <p>before creating the axis line representation, add it before creating the cube objects like: </p>
+            <p style="font-family: 'Courier New', Courier, monospace;">
+                //10. Rotate everything including the X, Y and Z axis and objects 
+                <br/>//mv=mult(mv,translate( 0, 0, -10 ));
+                <br/>//mv = mult(mv, rotateX(90));
+                <br/>
+                <br/>gl.uniformMatrix4fv(mvLoc, gl.TRUE, flatten(transpose(mv)));
+                <br/>gl.drawArrays(shapes.axes.type, shapes.axes.start, shapes.axes.size);	
+                <br/>
+                <br/>//10. Rotate the two objects only not the X, Y and Z axis
+                <br/>mv=mult(mv,translate( 0, 0, -10 ));
+                <br/>mv = mult(mv, rotateX(90));
+                <br/>
+                <br/>//code for adding objects goes here
+            </p>    
+        
+        
+        </li>
+    </ul>
 </body>
 </html>
