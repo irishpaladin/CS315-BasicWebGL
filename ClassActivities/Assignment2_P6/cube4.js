@@ -125,7 +125,8 @@ function render()
     gl.uniform1i(partNoLoc, partNo);
     gl.drawArrays( gl.TRIANGLES, 0, NumVertices );
     
-    theta[1] = 120;
+    theta[1] = 60;
+    //theta[1] = 120;
     gl.uniform3fv(thetaLoc, theta);
 
     partNo = 2;
