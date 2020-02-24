@@ -109,17 +109,24 @@ function render()
 {
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    theta[0] += 0.5;
+    theta[0] = 90;
     gl.uniform3fv(thetaLoc, theta);
 
     partNo = 1;
     gl.uniform1i(partNoLoc, partNo);
     gl.drawArrays( gl.TRIANGLES, 0, NumVertices );
     
-    theta[1] += 0.75;
+    theta[1] = 120;
     gl.uniform3fv(thetaLoc, theta);
 
     partNo = 2;
+    gl.uniform1i(partNoLoc, partNo);
+    gl.drawArrays( gl.TRIANGLES, 0, NumVertices );
+
+    theta[2] += .5;
+    gl.uniform3fv(thetaLoc, theta);
+
+    partNo = 3;
     gl.uniform1i(partNoLoc, partNo);
     gl.drawArrays( gl.TRIANGLES, 0, NumVertices );
     
