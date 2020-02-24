@@ -66,9 +66,6 @@ void main()
                     0.0, 0.0, 1.0, 0.0,
                     0.0, 3.0, 0.0, 1.0);
 
-    
-                    
-    
 
     mat4 M2 = t3* t5* rz2* t4 * modelScale2;
 
@@ -103,7 +100,7 @@ void main()
     fColor = vColor;
     if (partNo == 1)
        //gl_Position = scale * trans * M1 * vPosition;
-       gl_Position = scale * trans * ry * t3 * rz2 * M1 * vPosition;
+       gl_Position = scale * trans * ry * t3* t5* rz2* t4 * M1 * vPosition;
     else if (partNo == 2)
        gl_Position = scale * trans* ry * M2 * vPosition;
     else if (partNo == 3)
