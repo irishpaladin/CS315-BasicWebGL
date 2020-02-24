@@ -13,6 +13,9 @@ var theta = [ 45.0, 0.0, 0.0 ];
 var thetaLoc;
 var partNoLoc;
 
+var rotate = false;
+var theta2 = 45;
+
 var Colors = [
         [ 0.0, 0.0, 0.0, 1.0 ],  // black
         [ 1.0, 0.0, 0.0, 1.0 ],  // red
@@ -64,7 +67,13 @@ window.onload = function init()
     thetaLoc = gl.getUniformLocation(program, "theta"); 
     partNoLoc = gl.getUniformLocation(program, "partNo"); 
 
-            
+    document.getElementById("rotate-toggle").addEventListener("click", function(){
+        if(rotate){
+            rotate = false;
+        }else{
+            rotate = true;
+        }
+      });        
     render();
 }
 
@@ -123,7 +132,11 @@ function render()
     gl.uniform1i(partNoLoc, partNo);
     gl.drawArrays( gl.TRIANGLES, 0, NumVertices );
 
-    theta[2] += .5;
+    if(rotate){
+        theta2 += .5;
+    }
+    
+    theta[2]=theta2;
     gl.uniform3fv(thetaLoc, theta);
 
     partNo = 3;

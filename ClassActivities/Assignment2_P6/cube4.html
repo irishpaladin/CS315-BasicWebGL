@@ -1,4 +1,62 @@
 <html>
+    <head>
+        <style>
+            body{
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            }
+            .switch {
+              position: relative;
+              display: inline-block;
+              width: 60px;
+              height: 34px;
+            }
+            
+            .switch input { 
+              opacity: 0;
+              width: 0;
+              height: 0;
+            }
+            
+            .slider {
+              position: absolute;
+              cursor: pointer;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              background-color: #ccc;
+              -webkit-transition: .4s;
+              transition: .4s;
+            }
+            
+            .slider:before {
+              position: absolute;
+              content: "";
+              height: 26px;
+              width: 26px;
+              left: 4px;
+              bottom: 4px;
+              background-color: white;
+              -webkit-transition: .4s;
+              transition: .4s;
+            }
+            
+            input:checked + .slider {
+              background-color: #2196F3;
+            }
+            
+            input:focus + .slider {
+              box-shadow: 0 0 1px #2196F3;
+            }
+            
+            input:checked + .slider:before {
+              -webkit-transform: translateX(26px);
+              -ms-transform: translateX(26px);
+              transform: translateX(26px);
+            }
+            
+            
+            </style>
 
 <script id="vertex-shader" type="x-shader/x-vertex">
 
@@ -18,7 +76,7 @@ void main()
     vec3 s = sin( angles );
 
     // Remeber: thse matrices are column-major
-    // L1
+    // L1 cube
     mat4 modelScale1 = mat4( 1.0, 0.0, 0.0, 0.0,
 			0.0, 2.0, 0.0, 0.0,
 			0.0, 0.0, 1.0, 0.0,
@@ -41,7 +99,7 @@ void main()
 
     mat4 M1 = t2 * rz * t1 * modelScale1;
 
-    // L2
+    // L1 & L2 cube
     mat4 modelScale2 = mat4( 1.0, 0.0, 0.0, 0.0,
 			0.0, 2.0, 0.0, 0.0,
 			0.0, 0.0, 1.0, 0.0,
@@ -66,10 +124,10 @@ void main()
                     0.0, 0.0, 1.0, 0.0,
                     0.0, 3.0, 0.0, 1.0);
 
+    mat4 trans1 = t3* t5* rz2* t4;
+    mat4 M2 = trans1 * modelScale2;
 
-    mat4 M2 = t3* t5* rz2* t4 * modelScale2;
-
-    //L3
+    //L1 & L2 & L3
     mat4 modelScale3 = mat4( 1.0, 0.0, 0.0, 0.0,
 			0.0, 3.0, 0.0, 0.0,
 			0.0, 0.0, 1.0, 0.0,
@@ -80,7 +138,6 @@ void main()
                     -s[2], 0.0,  c[2], 0.0,
                     0.0,  0.0,  0.0, 1.0 );
 
-    
     mat4 M3 = ry * modelScale3;
 
 
@@ -100,7 +157,7 @@ void main()
     fColor = vColor;
     if (partNo == 1)
        //gl_Position = scale * trans * M1 * vPosition;
-       gl_Position = scale * trans * ry * t3* t5* rz2* t4 * M1 * vPosition;
+       gl_Position = scale * trans * ry * trans1 * M1 * vPosition;
     else if (partNo == 2)
        gl_Position = scale * trans* ry * M2 * vPosition;
     else if (partNo == 3)
@@ -125,9 +182,18 @@ main()
 <script type="text/javascript" src="../Common/initShaders.js"></script>
 <script type="text/javascript" src="../Common/MVnew.js"></script>
 <script type="text/javascript" src="cube4.js"></script>
-
+</head>
 <body>
 <br/>
+ <table>
+     <td>Rotate:</td>
+     <td><label class="switch">
+        <input type="checkbox" id = "rotate-toggle">
+      <span class="slider"></span>
+    </label>
+    </td>
+ </table>
+
 <br/>
 <br/>
 
