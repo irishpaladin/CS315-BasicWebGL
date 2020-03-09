@@ -23,17 +23,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
     vec3 col = vec3(0.);
 
-    float mask = Circle(uv, vec2(0), 0.4, 0.05);
-
-    mask -= Circle(uv, vec2(-.13, 0.2), 0.07, 0.01);
-    mask -= Circle(uv, vec2(.13, 0.2), 0.07, 0.01);
-
-    float mouth = Circle(uv, vec2(0.), .3, 0.02);
-    mouth -= Circle(uv, vec2(0., 0.1), .3, 0.02);
-
-    mask -= mouth;
-    //col = vec3(mouth);
-    col = vec3(1., 1., 0)*mask;
 
     // Output to screen
     fragColor = vec4(col,1.0);
