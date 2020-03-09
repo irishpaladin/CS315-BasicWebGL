@@ -5,6 +5,25 @@
  * Adapted for WebGL by Alex Clarke, 2016.
  */
 
+/* 
+    2. Locate the default light settings in the render() function. Is this a positional or directional light? 
+    Positional/Point light
+    - Directional
+    How can you tell?
+    - Because the fourth coordianate in the lpos is 0  
+    
+
+    3.f Did the mv matrix have an effect both times? Why or why not? Draw a couple diagrams if you need to.</p>
+    - Yes but since light position's second coordinate is 1 and eye's second coordinate is 0 then it seems like it doesn't change. 
+    
+    5. The eye position and the x,y,z coordinates used for E2P3.png, E2P4.png, E2P5.png, and E2P6.png are the same. The only differences are the type of light and application of the mv matrix to switch into World vs View coordinates. Why is the effect so different? Consider which transformations have an effect on vectors vs points in your answer.
+    
+    6. Draw a diagram to explain the differences between the two types of light as seen from E2P3.png and E2P6.png
+     
+*/
+
+
+
 
 //----------------------------------------------------------------------------
 // Variable Setup
@@ -289,6 +308,7 @@ function render()
 
     //Set initial view
     var eye = vec3(0.0, 0.0, 10.0);
+    //var eye = vec3(10.0, 0.0, 0.0);
     var at =  vec3(0.0, 0.0, 0.0);
     var up =  vec3(0.0, 1.0, 0.0);
     
@@ -298,18 +318,22 @@ function render()
     //Set up light properties here
 
     //Defaults:
-    gl.uniform4fv(light.diffuse, vec4(0.8, 0.8, 0.8, 1.0));
-    gl.uniform4fv(light.ambient, vec4(0.2, 0.2, 0.2, 1.0));
-    var lpos = vec4(0.0, 0.0, 1.0, 0.0);
-    gl.uniform4fv(light.position,lpos);
-
+    
     //Positional light position settings
-
-
+    //var lpos = vec4(0.0, 0.0, 1.0, 1.0);
+    var lpos = vec4(0.0, 1.0, 0.0, 1.0);
+    
     //Directional light position settings
-
-
+    //var lpos = vec4(0.0, 0.0, 1.0, 0.0);
+    //var lpos = vec4(0.0, 1.0, 0.0, 0.0);
+    
+    
     //Diffuse and ambient light color settings
+    gl.uniform4fv(light.diffuse, vec4(0.8, 0.8, 0.8, 1.0));
+    //gl.uniform4fv(light.ambient, vec4(0.2, 0.2, 0.2, 1.0));
+    gl.uniform4fv(light.ambient, vec4(0.0, 0.0, 0.0, 1.0)); //light ambient changed to black
+    //gl.uniform4fv(light.position,lpos);
+    gl.uniform4fv(light.position,mult(mv,lpos));
 
 
     ///////////////////
@@ -326,6 +350,9 @@ function render()
 
     //////////
     //set left sphere materials to red
+    var red = vec4(1.0, .02, 0.2, 1.0);
+    gl.uniform4fv(material.diffuse, red);
+    gl.uniform4fv(material.ambient, mult(vec4(0.5, 0.5, 0.5, 1.0),red));
 
 
     var sphereTF = mult(mv, translate(-2,0,0));
@@ -334,6 +361,9 @@ function render()
     
     ///////////
     //set right sphere materials to green
+    var green = vec4(0.02, 1, 0.2, 1.0);
+    gl.uniform4fv(material.diffuse, green);
+    gl.uniform4fv(material.ambient, mult(vec4(0.5, 0.5, 0.5, 1.0),green));
 
 
     sphereTF = mult(mv, translate(2,0,0));
