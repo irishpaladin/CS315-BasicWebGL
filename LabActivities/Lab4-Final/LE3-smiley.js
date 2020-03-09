@@ -25,7 +25,7 @@ window.onload = function init() {
    
    gl.enable(gl.BLEND);
 
-   program = initShaders(gl, "LE3.vert", "LE3_ShaderPlay.frag");
+   program = initShaders(gl, "LE3.vert", "LE3_ShaderPlay_smiley.frag");
    gl.useProgram(program);
 
    //////////////////////
