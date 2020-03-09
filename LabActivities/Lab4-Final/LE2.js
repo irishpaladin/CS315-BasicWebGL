@@ -16,10 +16,13 @@
     3.f Did the mv matrix have an effect both times? Why or why not? Draw a couple diagrams if you need to.</p>
     - Yes but since light position's second coordinate is 1 and eye's second coordinate is 0 then it seems like it doesn't change. 
     
-    5. The eye position and the x,y,z coordinates used for E2P3.png, E2P4.png, E2P5.png, and E2P6.png are the same. The only differences are the type of light and application of the mv matrix to switch into World vs View coordinates. Why is the effect so different? Consider which transformations have an effect on vectors vs points in your answer.
-    
+    5. The eye position and the x,y,z coordinates used for E2P3.png, E2P4.png, E2P5.png, and E2P6.png are the same. The only 
+    differences are the type of light and application of the mv matrix to switch into World vs View coordinates. 
+    Why is the effect so different? Consider which transformations have an effect on vectors vs points in your answer.
+    -
+
     6. Draw a diagram to explain the differences between the two types of light as seen from E2P3.png and E2P6.png
-     
+    - refer to diagramP6.jpg 
 */
 
 
