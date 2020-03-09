@@ -248,6 +248,7 @@ function render() {
 
     //Set initial view
     var eye = vec3(0.0, 0.0, 10.0);
+    //var eye = vec3(10.0, 0.0, 0.0)
     var at =  vec3(0.0, 0.0, 0.0);
     var up =  vec3(0.0, 1.0, 0.0);
 
@@ -257,19 +258,18 @@ function render() {
     //Set up light properties here
 
     //Defaults:
-    
     //EXERCISE: put Positional light position settings here
+    var lpos = vec4(0.0, 1.0, 0.0, 1.0);
+    
+    //EXERCISE: put Directional light position settings here
+    //var lpos = vec4(0.0, 1.0, 0.0, 0.0);
+    
+    
+    //EXERCISE: put Diffuse and ambient light color settings here
     gl.uniform4fv(light.diffuse, vec4(0.8, 0.8, 0.8, 1.0));
     gl.uniform4fv(light.ambient, vec4(0.2, 0.2, 0.2, 1.0));
-    var lpos = vec4(0.0, 0.0, 1.0, 0.0);
-    gl.uniform4fv(light.position, lpos);
-
-
-    //EXERCISE: put Directional light position settings here
-
-
-    //EXERCISE: put Diffuse and ambient light color settings here
-
+    gl.uniform4fv(light.position, mult(mv,lpos));
+    //gl.uniform4fv(light.position, lpos);
 
     //set cube materials to white
     gl.uniform4fv(material.diffuse, vec4(0.8, 0.8, 0.8, 1.0));
@@ -282,7 +282,9 @@ function render() {
 
     //////////
     //EXERCISE: set left sphere materials to red as instructed in exercise
-
+    var red = vec4(1.0, .02, 0.2, 1.0);
+    gl.uniform4fv(material.diffuse, red);
+    gl.uniform4fv(material.ambient, mult(vec4(0.5, 0.5, 0.5, 1.0),red));
 
     var sphereTF = mult(mv, translate(-2, 0, 0));
     gl.uniformMatrix4fv(mvLoc, gl.FALSE, flatten(transpose(sphereTF)));
@@ -290,7 +292,9 @@ function render() {
 
     ///////////
     //EXERCISE: set right sphere materials to green as instructed in exercise
-
+    var green = vec4(0.02, 1, 0.2, 1.0);
+    gl.uniform4fv(material.diffuse, green);
+    gl.uniform4fv(material.ambient, mult(vec4(0.5, 0.5, 0.5, 1.0),green));
 
     sphereTF = mult(mv, translate(2, 0, 0));
     gl.uniformMatrix4fv(mvLoc, gl.FALSE, flatten(transpose(sphereTF)));

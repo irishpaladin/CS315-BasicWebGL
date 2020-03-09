@@ -22,9 +22,19 @@
     <canvas id="gl-canvas" width="512" height="512">
         Oops ... your browser doesn't support the HTML5 canvas element
     </canvas>
-    Locate the default light settings in the render() function. Is this a positional or directional light? 
-    Positional/Point light
-    How can you tell?
-    because lpos[3] is 0.0, it is a point
+    <p>
+        2Locate the default light settings in the render() function. Is this a positional or directional light? 
+        Positional/Point light
+        How can you tell?
+        because lpos[3] is 0.0, it is a point
+    </p>
+
+    <p>3.f Did the mv matrix have an effect both times? Why or why not? Draw a couple diagrams if you need to.</p>
+    <p>
+        The eye position and the x,y,z coordinates used for E2P3.png, E2P4.png, E2P5.png, and E2P6.png are the same. The only differences are the type of light and application of the mv matrix to switch into World vs View coordinates. Why is the effect so different? Consider which transformations have an effect on vectors vs points in your answer.
+    </p>
+    <p>
+        Draw a diagram to explain the differences between the two types of light as seen from E2P3.png and E2P6.png
+    </p>
 </body>
 </html>
