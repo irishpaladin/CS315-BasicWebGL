@@ -13,7 +13,7 @@ uniform mat4 mv;    // modelview matrix
 struct _light
 {
   vec3 diffuse;
-  //EXERCISE 1: Add specular colour member here.
+  vec3 specular; //EXERCISE 1: Add specular colour member here.
   vec3 ambient;
   vec4 position;
   vec4 spotdirection;
@@ -26,6 +26,9 @@ struct _material
   vec3 diffuse;
   vec3 ambient;
   //EXERCISE 1: Add specular and shininess colour members.
+  vec3 specular; 
+  float shininess;
+  ///
 };
 
 //lighting constants
@@ -102,9 +105,13 @@ vec3 lightCalc(in _light light)
 
 
   //EXERCISE 1: Set up eye vector
+  vec3 E = -normalize(mvPosition.xyz);
+
   //EXERCISE 1: Set up the half vector
+  vec3 H = normalize(L+E);
+
   //EXERCISE 1: Calculate the Specular coefficient
-  float Ks = 0.; //fixme!!
+  float Ks = pow(max(dot(N,H),0.0), material.shininess); //fixme!!
 
   //Calculate diffuse coefficient
   float Kd = dot(L,N);
@@ -114,11 +121,12 @@ vec3 lightCalc(in _light light)
   {
     Kd = 0.;
     //EXERCISE 1: Set Ks to 0.
+    Ks = 0.;
   }
 
   //Calculate colour for this light
   //EXERCISE 1: Add specular colour calculations
-  vec3 color =  Ks /* something, something */ +
+  vec3 color =  Ks * material.specular * light.specular +
                 Kd * material.diffuse * light.diffuse +
                      material.ambient * light.ambient;
 
