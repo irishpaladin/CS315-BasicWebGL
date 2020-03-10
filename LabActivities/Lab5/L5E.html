@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Specular Lighting and Material Properties</title>
+
+<!-- External javascript files. -->
+<script type="text/javascript" src="../Common/initShaders2.js"></script>
+<script type="text/javascript" src="../Common/MVnew.js"></script>
+<script type="text/javascript" src="../Common/flatten.js"></script>
+<script type="text/javascript" src="../Common/uofrGraphics.js"></script>
+<script type="text/javascript" src="../Common/j3di.js"></script>
+<script type="text/javascript" src="L5E.js"></script>
+</head>
+
+<body bgcolor="#606060" text="#ffffff">
+    <!-- This is the canvas - the only HTML element that can render WebGL 
+         graphics. You can have more than one WebGL canvas on a web page, but
+         that gets tricky. Stick to one per page for now. -->
+    <canvas id="gl-canvas" width="800" height="560">
+        Oops ... your browser doesn't support the HTML5 canvas element
+    </canvas>
+	 <table>
+		 <tr>
+			 <td>Sphere Rez:</td>
+			 <td>5</td>
+			 <td><input id="rez" type="range" min="3" max="100" step="1" value="10" style="width: 650px;"></td>
+			 <td> 100</td>
+			 <td id="rezval">fixme</td>
+		 </tr>
+	 </table>
+</body>
+</html>
+
+
+<!-- 1/ (c2 d^2)+(c1 d)+c0
+EXERCISE 1: Add specular illumination code to gshader.vert and L5E.js. Specifically:
+Add the specular member to the _light and _material structures where indicated
+Add the shininess member to the _material structure where indicated
+Add the specular highlighting calculations to the lightCalc() function where indicated
+Note the specular colours and shininess that are already added to light[0], material.clay and material.redPlastic
+Search for and note the places specularLoc and shininessLoc have already been queried from the shader and added to convenience functions so they can easily be set at the same time as other lighting properties.
+In testing, you should see a white highlight that follows your glowing ball, especially on the sphere if you increase Sphere Rez (careful - there's a big performance hit at high Rez).
+
+check part a
+
+
+
+_/2 EXERCISE 2: Add attenuation code to gshader.vert and L5E.js. Specifically:
+In gshader.vert, add attenuation coefficients as a member of the _light structure where indicated.
+In gshader.vert, add the light distance and attenuation calculations to the lightCalc() function where indicated.
+Multiply the return of the lightCalc() function by the attenuation.
+In L5E.js, add attenuation coefficients to light[0]. To understand how the quadratic, linear and constant coefficients interact, you can try playing with this fooplot.
+In testing, you should notice that lighting changes a lot more as you move the glowing ball. The scene should get noticeably darker as the light moves away from your objects.
+
+check part b
+
+
+_/2 EXERCISE 3: Complete the code to allow 2 or more lights to gshader.vert and L5E.js. Specifically:
+In gshader.vert, change the nLights constant as directed. You can add more lights later by changing this number.
+In gshader.vert, add a for loop around the line where lightCalc() is called so that it is called once for every light.
+In L5E.js, use a loop to request uniform locations for your new lights where indicated. It is easiest to hard code a number to match the shader since you cannot query the value of a constant from a shader program. Some GL programmers use string parsing to make the two values match.
+In L5E.js, add propeties for your new light(s) where indicated.
+In L5E.js, set the second light's position in World coordinates to match the sphere on the lamp post.
+If you are extra clever, you can make it so the light automatically follows the lamp post if you change its location...
+In testing, you should notice a subtle light coming from the direction of the lamp post regardless of the position of the floating ball.
+
+part b
+
+_/2 EXERCISE 4: Make a Phong version of your multi-light specular shader so you can see your specular highlights more clearly. Specifically:
+Copy gshader.vert and gshader.frag to pshader.vert and pshader.frag respectively.
+Move all the lighting structures, lighting constants, lighting uniforms and the lightCalc() function and prototype from pshader.vert to pshader.frag.
+Move the code marked as Color Caclulation from pshader.vert's main to pshader.frag's main.
+In pshader.vert, remove the color output and N global. Switch the mvPosition and mvN globals to outputs.
+In pshader.frag, switch the colorinput to a global, add vec3 N as a global, and adjust your inputs to match pshader.vert's outputs.
+In testing, you should see very smooth highlights on the red plastic sphere at all resolutions.
+
+hardest
+
+
+_/2 EXERCISE 5: Make and name a material property for Batman or an OBJ of your choice. Specifically:
+In L5E.js, add at least one material to the materialobject where indicated. Be sure to give it a descriptive name like the samples you see there.
+You can use the color pickers and sliders in the lab notes to help you design your material. MacOS has a built-in Digital Color Meter app that is perfect for this.
+Replace Batman's clay material with yours.
+Optional: replace Batman with an OBJ of your choice, or give him a friend. Ask your lab instructor for help converting free models from free3d.com if they don't work directly off the site.
+In testing, you should see your material on Batman or other OBJ of your choice.
+
+play with shaders
+
+
+
+-->
