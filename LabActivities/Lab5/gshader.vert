@@ -19,6 +19,7 @@ struct _light
   vec4 spotdirection;
   //EXERCISE 2: Add attenuation coefficients here
   // (tip: pack all three coefficients into a vec3)
+  vec3 attenuation;
 };
 
 struct _material
@@ -99,7 +100,9 @@ vec3 lightCalc(in _light light)
   {
     L = normalize(light.position.xyz - mvPosition.xyz);
     //EXERCISE 2: Calculate distance from mvPosition to light position
+    float dist = length(light.position.xyz - mvPosition.xyz);
     //EXERCISE 2: Calculate attenuation
+    attenuation = 1.0/(light.attenuation[0]+light.attenuation[1] * dist+light.attenuation[2]*dist*dist);
 
   }
 
@@ -134,5 +137,5 @@ vec3 lightCalc(in _light light)
   //** Stupid RGB color inspectors... **
   color = color/255./255.;
 
-  return color;
+  return color * attenuation;
 }

@@ -123,8 +123,11 @@ window.onload = function init() {
    light = [];
    //EXERCISE 2: Add an attenuation property. I suggest the follosing values:
    //            quadratic: 0.5 linear: 0 constant: 0.3
+   var quadratic = 0.5;
+   var linear = 0.0;
+   var constant = 0.3;
    light[0] =  {diffuse: white, specular: white, ambient: vec3(50,50,50), 
-                position: vec4(0,0,-2,1)};
+                position: vec4(0,0,-2,1), attenuation: vec3(constant, linear, quadratic) };
    
    //EXERCISE 3: Add properties for a second light here for the lamp post.
    //            Make it any colour you like but you'll have to 
@@ -190,6 +193,7 @@ function getAndSetShaderLocations()
       light[i].ambientLoc = gl.getUniformLocation(program, "light[" + i + "].ambient");
       light[i].positionLoc = gl.getUniformLocation(program, "light[" + i + "].position");
       //EXERCISE 2: get attenuation coefficients location
+      light[i].attenuationLoc = gl.getUniformLocation(program, "light[" + i + "].attenuation");
    }
 
    // Get  material uniform locations
@@ -273,6 +277,7 @@ function setLight(light, matrix)
    gl.uniform3fv(light.specularLoc, light.specular);
    gl.uniform4fv(light.positionLoc, mult(mv,light.position));
    //EXERCISE 2: send attenuation coefficients to shader
+   gl.uniform3fv(light.attenuationLoc, light.attenuation);
 }
 
 //----------------------------------------------------------------------------
