@@ -34,7 +34,8 @@ struct _material
 
 //lighting constants
 //EXERCISE 3: set the number of lights to 2
-const int nLights = 1; // number of lights
+//const int nLights = 1; // number of lights
+const int nLights = 2;
 
 //lighting uniforms
 uniform bool lighting;  // to enable and disable lighting
@@ -80,7 +81,10 @@ void main()
 
     //EXERCISE 3: loop through all the lights (not just light[0]
     //            and accumulate their returned rgb values in color.
-    color.rgb += lightCalc(light[0]);
+    for(int i = 0; i < nLights ; i++)
+    {
+      color.rgb += lightCalc(light[i]);
+    }
   }
   /// End Color Calculation ///
 
