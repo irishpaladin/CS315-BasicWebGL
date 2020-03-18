@@ -31,7 +31,11 @@ var modelViewMatrix, projectionMatrix;
 var modelViewMatrixLoc, projectionMatrixLoc;
 var eye;
 const at = vec3(0.0, 0.0, 0.0);
-var up = vec3(0.0, 1.0, 0.0);
+const up = vec3(0.0, 1.0, 0.0);
+
+
+var counter =-1.0;
+var part2 = false;
 
 var Colors = [
         [ 0.0, 0.0, 0.0, 1.0 ],  // black
@@ -86,7 +90,17 @@ window.onload = function init()
     modelViewMatrixLoc = gl.getUniformLocation( program, "modelViewMatrix" );
     projectionMatrixLoc = gl.getUniformLocation( program, "projectionMatrix" );
 
-            
+        
+    document.getElementById("toggle").addEventListener("click", function(){
+        counter =-1.0;
+        theta  = 0.7;
+        phi    = 0.0;
+        if(part2){
+            part2 = false;
+        }else{
+            part2 = true;
+        }
+      });   
     render();
 }
 
@@ -127,20 +141,26 @@ function quad(a, b, c, d, color)
     }
 }
 
-var i =-1;
+
 
 function render()
 {
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-
-
-    eye = vec3((radius*Math.sin(phi)), radius*Math.sin(theta), radius*Math.cos(phi));
+    if(part2){
+        eye = vec3((radius*Math.sin(phi)), radius*Math.sin(theta), radius*Math.cos(phi));
     
-    if(theta >= 0) {
-        phi = phi + 0.01;
-        theta = theta-0.002;
+        if(theta >= 0) {
+            phi = phi + 0.01;
+            theta = theta-0.002;
+        }
+    }else{
+        theta = 0.2;
+        eye = vec3((radius*Math.sin(phi)) + counter, radius*Math.sin(theta), radius*Math.cos(phi));  
+        if(counter<= 1)counter+=0.01;
     }
+
+    
 
     //console.log("eyeY:" + radius*Math.sin(theta));
              
