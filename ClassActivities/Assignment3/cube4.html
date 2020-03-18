@@ -1,0 +1,136 @@
+<html>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
+
+attribute  vec4 vPosition;
+attribute  vec4 vColor;
+varying vec4 fColor;
+
+uniform int partNo;
+
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+
+void main() 
+{
+    // Compute the sines and cosines of theta for each of
+    //   the three axes in one computation.
+
+    // Remeber: thse matrices are column-major
+    mat4 floorScale = mat4( 10.0, 0.0, 0.0, 0.0,
+			0.0, 0.1, 0.0, 0.0,
+			0.0, 0.0, 10.0, 0.0,
+			0.0, 0.0, 0.0, 1.0);
+    mat4 Mf = floorScale;
+
+
+
+    mat4 b1Scale = mat4( 1.0, 0.0, 0.0, 0.0,
+			0.0, 3.0, 0.0, 0.0,
+			0.0, 0.0, 1.0, 0.0,
+			0.0, 0.0, 0.0, 1.0);
+    
+    mat4 b1Trans =  mat4( 1.0, 0.0, 0.0, 0.0,
+			0.0, 1.0, 0.0, 0.0,
+			0.0, 0.0, 1.0, 0.0,
+			1.5, 0.0, 0.0 , 1.0);
+    mat4 M1 = b1Trans * b1Scale;
+
+
+
+    mat4 b2Scale = mat4( 1.0, 0.0, 0.0, 0.0,
+			0.0, 1.5, 0.0, 0.0,
+			0.0, 0.0, 1.0, 0.0,
+			0.0, 0.0, 0.0, 1.0);
+    
+    mat4 b2Trans =  mat4( 1.0, 0.0, 0.0, 0.0,
+			0.0, 1.0, 0.0, 0.0,
+			0.0, 0.0, 1.0, 0.0,
+			-1.5, 0.0, 0.0, 1.0);
+    mat4 M2 = b2Trans * b2Scale;
+
+
+
+    mat4 b3Scale = mat4( 2.0, 0.0, 0.0, 0.0,
+			0.0, 1, 0.0, 0.0,
+			0.0, 0.0, 1.0, 0.0,
+			0.0, 0.0, 0.0, 1.0);
+    
+    mat4 b3Trans =  mat4( 1.0, 0.0, 0.0, 0.0,
+			0.0, 1.0, 0.0, 0.0,
+			0.0, 0.0, 1.0, 0.0,
+			0.0, 0.0, 1.5, 1.0);
+    mat4 M3 = b3Trans * b3Scale;
+    
+
+
+    mat4 b4Scale = mat4( 2.0, 0.0, 0.0, 0.0,
+			0.0, 1, 0.0, 0.0,
+			0.0, 0.0, 1.0, 0.0,
+			0.0, 0.0, 0.0, 1.0);
+    
+    mat4 b4Trans =  mat4( 1.0, 0.0, 0.0, 0.0,
+			0.0, 1.0, 0.0, 0.0,
+			0.0, 0.0, 1.0, 0.0,
+			0.0, 0.0, -1.5, 1.0);
+    mat4 M4 = b4Trans * b4Scale;
+
+
+
+    mat4 scale = mat4( 0.2, 0.0, 0.0, 0.0,
+			0.0, 0.2, 0.0, 0.0,
+			0.0, 0.0, 0.2, 0.0,
+			0.0, 0.0, 0.0, 1.0);
+
+    mat4 trans = mat4( 1.0, 0.0, 0.0, 0.0,
+			0.0, 1.0, 0.0, 0.0,
+			0.0, 0.0, 1.0, 0.0,
+			0.0, -3.0, 0.0, 1.0);
+
+
+    fColor = vColor;
+    if (partNo == 1)
+       gl_Position = projectionMatrix * modelViewMatrix * scale * trans * Mf * vPosition;
+    else if (partNo == 2)
+       gl_Position = projectionMatrix * modelViewMatrix * scale * trans* M1 * vPosition;
+    else if (partNo == 3)
+       gl_Position = projectionMatrix * modelViewMatrix * scale * trans* M2 * vPosition;
+    else if (partNo == 4)
+       gl_Position = projectionMatrix * modelViewMatrix * scale * trans* M3 * vPosition;
+    else if (partNo == 5)
+       gl_Position = projectionMatrix * modelViewMatrix * scale * trans* M4 * vPosition;
+
+} 
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+
+precision mediump float;
+   
+varying vec4 fColor;
+
+void
+main()
+{
+    gl_FragColor = fColor;
+}
+</script>
+
+<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../Common/initShaders.js"></script>
+<script type="text/javascript" src="../Common/MVnew.js"></script>
+<script type="text/javascript" src="cube4.js"></script>
+
+<body>
+<br/>
+<br/>
+<br/>
+
+<canvas id="gl-canvas" width="512"" height="512">
+Oops ... your browser doesn't support the HTML5 canvas element
+</canvas>
+   
+
+
+</body>
+</html>

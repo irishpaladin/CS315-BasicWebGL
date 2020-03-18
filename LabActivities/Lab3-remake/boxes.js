@@ -220,7 +220,7 @@ function render() {
    //mv=mult(mv,translate( 0, 0, -10 ));
    
    //11. Rotate everything so that you can see all three axes along with the two cubes 
-   mv=mult(mv,translate( 0, 0, -10 ));
+   mv = mult(mv,translate( 0, 0, -10 ));
    mv = mult(mv, rotateX(30));
    mv = mult(mv, rotateY(30));
 
