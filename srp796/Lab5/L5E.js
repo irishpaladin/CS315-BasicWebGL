@@ -135,7 +135,7 @@ window.onload = function init() {
    //            adjust the lamp to match...
    //            You can set position here or in render().
    light[1] =  {diffuse: white, specular: white, ambient: vec3(50,50,50), 
-      position: l1Pos, attenuation: vec3(constant, linear, quadratic) };
+      attenuation: vec3(constant, linear, quadratic) };
    //////////////////////////
    // Initialize material object
    // and add some materials
@@ -304,9 +304,9 @@ function render()
 
    //Position Light 1 in World space
    //EXERCISE 3: set light[1]'s position to match the top of the lamp post
-   l1Pos = mult(mult(lookAt(vec3(0.0, 1.5, 8.0),vec3(0.0, 1.7, 0.0),vec3(0.0, 1.0, 0.0)), translate(-3, -1, 0)), translate(0, 5.335, 0));
    //EXERCISE 3: send light[1] to the setLight function, and also send the
    //            the mv matrix to help place it in World space
+   light[1]["position"] = mult(mv,vec4(-3,4.335,0,1));
    setLight(light[1]);
 
    var batmanTF = mult(mv, mult(translate(0, -1, 0), rotateY(ry)));
