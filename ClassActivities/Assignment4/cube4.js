@@ -5,7 +5,7 @@ var gl;
 var NumVertices  = 36;
 var index = 0;
 var points = [];
-var colors = [];
+var normals = [];
 
 var partNo = 1;
 var mv = new mat4();
@@ -32,6 +32,21 @@ var modelViewMatrixLoc, projectionMatrixLoc;
 var eye;
 const at = vec3(0.0, 0.0, 0.0);
 const up = vec3(0.0, 1.0, 0.0);
+
+
+var lightPosition = vec4(1.0, 2.0, -2.0, 0.0 );
+var lightAmbient = vec4(0.2, 0.2, 0.2, 1.0 );
+var lightDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
+var lightSpecular = vec4( 1.0, 1.0, 1.0, 1.0 );
+
+var materialAmbient = vec4( 1.0, 0.0, 1.0, 1.0 );
+var materialDiffuse = vec4( 1.0, 0.8, 0.0, 1.0 );
+var materialSpecular = vec4( 1.0, 0.8, 0.0, 1.0 );
+var materialShininess = 100.0;
+
+var ambientColor, diffuseColor, specularColor;
+
+
 
 
 var counter =-1.0;
@@ -70,11 +85,11 @@ function multColor(clr1, clr2){
 function triangle(a, b, c) {
     
     points.push(a);
-    colors.push(Colors[7]);
+    normals.push(a);
     points.push(b);  
-    colors.push(Colors[7]);    
+    normals.push(b);    
     points.push(c);
-    colors.push(Colors[7]);
+    normals.push(c);
 
     index += 3;
 }
@@ -134,14 +149,18 @@ window.onload = function init()
     //
     var program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
+
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    specularProduct = mult(lightSpecular, materialSpecular);
     
     var cBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer );
-    gl.bufferData( gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW );
+    gl.bufferData( gl.ARRAY_BUFFER, flatten(normals), gl.STATIC_DRAW );
 
-    var vColor = gl.getAttribLocation( program, "vColor" );
-    gl.vertexAttribPointer( vColor, 4, gl.FLOAT, false, 0, 0 );
-    gl.enableVertexAttribArray( vColor );
+    var vNormal = gl.getAttribLocation( program, "vNormal" );
+    gl.vertexAttribPointer( vNormal, 4, gl.FLOAT, false, 0, 0 );
+    gl.enableVertexAttribArray( vNormal );
 
     var vBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, vBuffer );
@@ -167,6 +186,17 @@ window.onload = function init()
             part2 = true;
         }
       });   
+
+      gl.uniform4fv( gl.getUniformLocation(program, 
+        "ambientProduct"),flatten(ambientProduct) );
+     gl.uniform4fv( gl.getUniformLocation(program, 
+        "diffuseProduct"),flatten(diffuseProduct) );
+     gl.uniform4fv( gl.getUniformLocation(program, 
+        "specularProduct"),flatten(specularProduct) );	
+     gl.uniform4fv( gl.getUniformLocation(program, 
+        "lightPosition"),flatten(lightPosition) );
+     gl.uniform1f( gl.getUniformLocation(program, 
+        "shininess"),materialShininess );
     render();
 }
 
@@ -229,7 +259,7 @@ function quad(a, b, c, d, color)
 
     for ( var i = 0; i < indices.length; ++i ) {
         points.push( vertices[indices[i]] );
-        colors.push( color );
+        normals.push( vertices[indices[i]] );
     }
 }
 
