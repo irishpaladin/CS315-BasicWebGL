@@ -9,6 +9,8 @@ var index = 0;
 
 var pointsArray = [];
 var colorsArray = [];
+var normalsArray = [];
+
 
 // Perspective projection parameters
 var near = 0.3;
@@ -16,26 +18,40 @@ var far = 20.0;
 var  fovy = 45.0;	// Field-of-view in Y direction angle
 var  aspect = 1.0;	// Viewport aspect ratio
 
+// Animation path of the camera:
+//   - from point L0 to L1 along a linear path
+//   - L0 = (-6.0, 8.0, 6.0)
+//   - L1 = (6.0, 8.0, 6.0)
+//   - The center of the scene: At = (0.0, 0.75, 0.0)
+
+var L0 = vec3(-6.0, 8.0, 6.0);
+var L1 = vec3(6.0, 8.0, 6.0);
+var NoOfSteps = 100.0;
+var dv = subtract(L1, L0);		// vector from L0 to L1
+dv = vec3(dv[0]/NoOfSteps, dv[1]/NoOfSteps, dv[2]/NoOfSteps);
+				// divide the length by the No of Steps.
+
+// Camera parameters for the "lookAt( )" function.
+var eye = L0;				// start at L0.
+var at = vec3(0.0, 0.75, 0.0);
+var up = vec3(0.0, 1.0, 0.0);
+
 // The camera is to fly in a circular spiral path from S0 to
 // S1 around the scene.
 //    S0 = (0.0, 5.0, 10.0)
 //    S1 = (0.0, 0.0, 10.0)
 //    The radius of the circle: R = 10.0
 //   - The center of the scene: At = (0.0, 0.75, 0.0)
-
 var angle = 0.0;
 var height = 5.0;
 var radius = 10.0;
-var NoOfSteps = 200.0;
-var angleInc = 2.0*Math.PI/NoOfSteps;
-var heightDec = -5.0/NoOfSteps;
+var angleInc = 2.0*Math.PI/200.0;
+var heightDec = -5.0/200.0;
 
-// Camera parameters for the "lookAt( )" function.
-var eye = vec3(radius*Math.sin(angle), height, radius*Math.cos(angle));
-				// start at S0.
-var at = vec3(0.0, 0.75, 0.0);
-var up = vec3(0.0, 1.0, 0.0);
 
+var count = 0;				// animation iteration counter
+var direction = true;			// forward/backward control
+var isLinear = true;
 
 // Tetrahedron as the starting shape of sphere centered at the
 // origin with radius 1.
@@ -43,6 +59,31 @@ var va = vec4(0.0, 0.0, -1.0,1);
 var vb = vec4(0.0, 0.942809, 0.333333, 1);
 var vc = vec4(-0.816497, -0.471405, 0.333333, 1);
 var vd = vec4(0.816497, -0.471405, 0.333333,1);
+
+////////////////////////////////////////////////////
+// Light and color cofiguration 
+var lightPosition = vec4(1.0, 2.0, -2.0, 0.0 );
+var lightAmbient = vec4(0.2, 0.2, 0.2, 1.0 );
+var lightDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
+var lightSpecular = vec4( 1.0, 1.0, 1.0, 1.0 );
+
+var materialAmbient = vec4( 0.2, 0.01, 0.01, 1.0 );
+var materialDiffuse = vec4( 1.0, 0.01, 0.01, 1.0 );
+var materialSpecular = vec4( 1.0, 0.5, 0.5, 1.0 );
+var materialShininess = 100.0;
+
+var ambientColor, diffuseColor, specularColor;
+var Primitives = [
+    [ 0.01, 0.01, 0.01, 1.0 ],  // black
+    [ 1.0, 0.01, 0.01, 1.0 ],  // red
+    [ 1.0, 1.0, 0.01, 1.0 ],  // yellow
+    [ 0.01, 1.0, 0.01, 1.0 ],  // green
+    [ 0.01, 0.01, 1.0, 1.0 ],  // blue
+    [ 1.0, 0.01, 1.0, 1.0 ],  // magenta
+    [ 1.0, 1.0, 1.0, 1.0 ],  // white
+    [ 0.01, 1.0, 1.0, 1.0 ]   // cyan
+];
+///////////////////////////////////////////////////////
 
 // Unit length cube centered at the origin.    
 var vertices = [
@@ -88,25 +129,22 @@ var modelTranslation;
 // ***************************************************** 
    
 function triangle(a, b, c) {
-	var aa, bb, cc;
-
-     colorsArray.push(vertexColors[1]);
-     colorsArray.push(vertexColors[1]);     
-     colorsArray.push(vertexColors[1]);     
-     
-	// Scale and translate the vertex.
-	aa = mult(modelTranslation, mult(modelScaling, a));
-	bb = mult(modelTranslation, mult(modelScaling, b));
-	cc = mult(modelTranslation, mult(modelScaling, c));
-
-     pointsArray.push(aa);
-     pointsArray.push(bb);      
+    var aa, bb, cc;	  	
+     	
+	// Scale and translate the vertex.	
+	aa = mult(modelTranslation, mult(modelScaling, a));	
+	bb = mult(modelTranslation, mult(modelScaling, b));	
+	cc = mult(modelTranslation, mult(modelScaling, c));	
+     pointsArray.push(aa);	
+     pointsArray.push(bb);      	
      pointsArray.push(cc);
+
+	 normalsArray.push(aa);
+     normalsArray.push(bb);
+     normalsArray.push(cc);
 
      index += 3;
 }
-
-
 function divideTriangle(a, b, c, count) {
     if ( count > 0 ) {
                 
@@ -127,15 +165,12 @@ function divideTriangle(a, b, c, count) {
         triangle( a, b, c );
     }
 }
-
-
 function tetrahedron(a, b, c, d, n) {
     divideTriangle(a, b, c, n);
     divideTriangle(d, c, b, n);
     divideTriangle(a, d, b, n);
     divideTriangle(a, c, d, n);
 }
-
 
 // ******************************************************
 // Vertex generation for Cube
@@ -146,7 +181,7 @@ function tetrahedron(a, b, c, d, n) {
 //      "modelTranslation".
 // ******************************************************
 
-function quad(a, b, c, d, color) {
+function quad(a, b, c, d) {
 	var aa, bb, cc, dd;
 
      	aa = mult(modelTranslation, mult(modelScaling, vertices[a]));
@@ -161,23 +196,23 @@ function quad(a, b, c, d, color) {
      pointsArray.push(cc); 
      pointsArray.push(dd); 
 
-     colorsArray.push(color);    
-     colorsArray.push(color);    
-     colorsArray.push(color);    
-     colorsArray.push(color);    
-     colorsArray.push(color);    
-     colorsArray.push(color);    
+     normalsArray.push(aa); 
+     normalsArray.push(bb); 
+     normalsArray.push(cc); 
+     normalsArray.push(aa);  
+     normalsArray.push(cc); 
+     normalsArray.push(dd);    
 
 }
 
 function colorCube()
 {
-    quad( 1, 0, 3, 2, vertexColors[1] );
-    quad( 2, 3, 7, 6, vertexColors[2] );
-    quad( 3, 0, 4, 7, vertexColors[3] );
-    quad( 6, 5, 1, 2, vertexColors[4] );
-    quad( 4, 5, 6, 7, vertexColors[5] );
-    quad( 5, 4, 0, 1, vertexColors[6] );
+    quad( 1, 0, 3, 2 );
+    quad( 2, 3, 7, 6 );
+    quad( 3, 0, 4, 7 );
+    quad( 6, 5, 1, 2 );
+    quad( 4, 5, 6, 7 );
+    quad( 5, 4, 0, 1 );
 }
 
 window.onload = function init() {
@@ -198,6 +233,13 @@ window.onload = function init() {
     var program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
     
+    ////////////////////////////////////////////////////
+    // Light and color
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    specularProduct = mult(lightSpecular, materialSpecular);
+    //////////////////////////////////////////////////////////
+
     // Floor: 10 X 10 rectangle, centered at the (0, 0, 0), and
     // perpendicular to y-axis
 
@@ -236,11 +278,11 @@ window.onload = function init() {
 
     var cBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer);
-    gl.bufferData( gl.ARRAY_BUFFER, flatten(colorsArray), gl.STATIC_DRAW );
+    gl.bufferData( gl.ARRAY_BUFFER, flatten(normalsArray), gl.STATIC_DRAW );
     
-    var vColor = gl.getAttribLocation( program, "vColor" );
-    gl.vertexAttribPointer( vColor, 4, gl.FLOAT, false, 0, 0 );
-    gl.enableVertexAttribArray( vColor);
+    var vNormal = gl.getAttribLocation( program, "vNormal" );
+    gl.vertexAttribPointer( vNormal, 4, gl.FLOAT, false, 0, 0 );
+    gl.enableVertexAttribArray( vNormal);
 
     var vBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
@@ -254,20 +296,53 @@ window.onload = function init() {
     projectionMatrixLoc = gl.getUniformLocation( program, "projectionMatrix" );
 
 
+    document.getElementById("toggle").addEventListener("click", function(){
+        isLinear = !isLinear;
+        direction = true;
+        count = 0;
+        if(isLinear){
+            NoOfSteps = 100.0;
+            eye = L0;
+        }
+        else{
+            NoOfSteps = 200.0;
+            angle = 0.0;
+            height = 5.0;
+            radius = 10.0;
+            eye = vec3(radius*Math.sin(angle), height, radius*Math.cos(angle));
+        }
+      });   
+
+    gl.uniform4fv( gl.getUniformLocation(program, 
+        "ambientProduct"),flatten(ambientProduct) );
+     gl.uniform4fv( gl.getUniformLocation(program, 
+        "diffuseProduct"),flatten(diffuseProduct) );
+     gl.uniform4fv( gl.getUniformLocation(program, 
+        "specularProduct"),flatten(specularProduct) );	
+     gl.uniform4fv( gl.getUniformLocation(program, 
+        "lightPosition"),flatten(lightPosition) );
+     gl.uniform1f( gl.getUniformLocation(program, 
+        "shininess"),materialShininess );
     render();
 }
 	
 
-var count = 0;				// animation iteration counter
-var direction = true;			// forward/backward control
 
 function render() {
     
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     
-    var eye = vec3(radius*Math.sin(angle), height, radius*Math.cos(angle));
+    if(isLinear){
+        if (direction)
+            eye = add(eye, dv);		// moving forward
+        else
+            eye = subtract(eye, dv);	// mving backward
+    }
+    else{
+        eye = vec3(radius*Math.sin(angle), height, radius*Math.cos(angle));
+    }
 
-    modelViewMatrix = lookAt(eye, at , up);
+	modelViewMatrix = lookAt(eye, at , up);
     projectionMatrix = perspective(fovy, aspect, near, far);
             
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix) );
@@ -275,14 +350,15 @@ function render() {
         
     gl.drawArrays( gl.TRIANGLES, 0, index );
 
-    if (direction) {
-        angle += angleInc;
-        height += heightDec;
-    } else {
-        angle -= angleInc;
-        height -= heightDec;
+    if(!isLinear){
+        if (direction) {
+            angle += angleInc;
+            height += heightDec;
+        } else {
+            angle -= angleInc;
+            height -= heightDec;
+        }
     }
-
     if (count < NoOfSteps)
 		count += 1;
 	else {				// if reaching the end
